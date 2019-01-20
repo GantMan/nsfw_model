@@ -1,20 +1,20 @@
 import os
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 from pathlib import Path
 import numpy as np
 import joblib
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications import VGG16
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Flatten
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras import initializers, regularizers
+from keras.preprocessing import image
+from keras.applications import VGG16
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten
+from keras.callbacks import ModelCheckpoint
+from keras import initializers, regularizers
 
 conv_base = VGG16(
     weights='imagenet',
     include_top=False,
-    input_shape=(800, 800, 3)
+    input_shape=(256, 256, 3)
 )
 
 # Let's unlock som trainable layers
@@ -30,6 +30,7 @@ for layer in conv_base.layers:
         layer.trainable = False
 
 # Let's see it
+print('Summary')
 print(conv_base.summary())
 
 model = Sequential([
@@ -47,6 +48,7 @@ checkpoint = ModelCheckpoint(
     filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 callbacks_list = [checkpoint]
 
+print('Compile model')
 model.compile(
     loss='categorical_crossentropy',
     optimizer='adam',
@@ -70,35 +72,40 @@ validation_datagen = ImageDataGenerator(
 )
 
 GENERATOR_BATCH_SIZE = 32
-base_dir = '/Users/gantman/Code/somestuff'
+base_dir = 'D:\\nswf_model_training_data\\data'
 
 train_dir = os.path.join(base_dir, 'train')
-validation_dir = os.path.join(base_dir, 'validation')
 test_dir = os.path.join(base_dir, 'test')
 
 train_generator = train_datagen.flow_from_directory(
     train_dir,
-    target_size=(800, 800),
+    target_size=(256, 256),
     class_mode='categorical',
     batch_size=GENERATOR_BATCH_SIZE
 )
 
 validation_generator = validation_datagen.flow_from_directory(
-    validation_dir,
-    target_size=(800, 800),
+    test_dir,
+    target_size=(256, 512562),
     class_mode='categorical',
     batch_size=GENERATOR_BATCH_SIZE
 )
 
+import time
+time.sleep(1)
+
+print('Start training!')
 history = model.fit_generator(
     train_generator,
     callbacks=callbacks_list,
     epochs=50,
-    steps_per_epoch=2000,
+    steps_per_epoch=3000,
     shuffle=True,
+    # having crazy threading issues
+    workers=0,
     use_multiprocessing=True,
     validation_data=validation_generator,
-    validation_steps=800
+    validation_steps=600
 )
 
 acc = history.history['acc']
