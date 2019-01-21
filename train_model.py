@@ -42,6 +42,10 @@ model = Sequential([
     Dense(5, activation='softmax')
 ])
 
+if os.path.exists("weights.best.hdf5"):
+        print ("loading ", "weights.best.hdf5")
+        model.load_weights('weights.best.hdf5')
+
 # checkpoint
 filepath = "weights.best.hdf5"
 checkpoint = ModelCheckpoint(
