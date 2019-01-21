@@ -42,6 +42,10 @@ model = Sequential([
     Dense(5, activation='softmax')
 ])
 
+if os.path.exists("weights.best.hdf5"):
+        print ("loading ", "weights.best.hdf5")
+        model.load_weights('weights.best.hdf5')
+
 # checkpoint
 filepath = "weights.best.hdf5"
 checkpoint = ModelCheckpoint(
@@ -86,7 +90,7 @@ train_generator = train_datagen.flow_from_directory(
 
 validation_generator = validation_datagen.flow_from_directory(
     test_dir,
-    target_size=(256, 512562),
+    target_size=(256, 256),
     class_mode='categorical',
     batch_size=GENERATOR_BATCH_SIZE
 )
