@@ -9,4 +9,4 @@ Trained on 100+ Gigs of NSFW data to identify:
 
 
 ### Thanks
-Special thanks to the [nsfw_data_scraper](https://github.com/GantMan/nsfw_data_scrapper).
+Special thanks to the [nsfw_data_scraper](https://github.com/GantMan/nsfw_data_scrapper) for helping me acquire the training data.
