@@ -1,1 +1,3 @@
-weights.best.hdf5
+*.hdf5
+*.h5
+logs/
