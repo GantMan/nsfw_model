@@ -1,3 +1,4 @@
 *.hdf5
 *.h5
 logs/
+.vscode/
