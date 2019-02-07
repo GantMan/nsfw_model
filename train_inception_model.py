@@ -25,12 +25,6 @@ num_classes = 5
 GENERATOR_BATCH_SIZE = 16
 weights_file = "weights.best_inception" + str(height) + ".hdf5"
 
-# conv_base = xception.Xception(
-#       weights='imagenet', 
-#       include_top=False, 
-#       input_shape=(height, width, num_channels)
-# )
-
 conv_base = InceptionV3(
     weights='imagenet', 
     include_top=False, 
@@ -40,19 +34,19 @@ conv_base = InceptionV3(
 # First time run, no unlocking
 #conv_base.trainable = False
 # Let's unlock trainable layers in conv_base by name
-# set_trainable = False
-# for layer in conv_base.layers:
-#     if layer.name == 'block14_sepconv1':
-#         set_trainable = True
-#     if set_trainable:
-#         layer.trainable = True
-#     else:
-#         layer.trainable = False
+set_trainable = False
+for layer in conv_base.layers:
+    if layer.name == 'conv2d_94':
+        set_trainable = True
+    if set_trainable:
+        layer.trainable = True
+    else:
+        layer.trainable = False
 # Let's unlock by layer level
-for layer in conv_base.layers[:172]:
-   layer.trainable = False
-for layer in conv_base.layers[172:]:
-   layer.trainable = True
+# for layer in conv_base.layers[:172]:
+#    layer.trainable = False
+# for layer in conv_base.layers[172:]:
+#    layer.trainable = True
 
 
 # Let's see it
@@ -161,7 +155,7 @@ print('Start training!')
 history = model.fit_generator(
     train_generator,
     callbacks=callbacks_list,
-    epochs=100,
+    epochs=110,
     steps_per_epoch=500,
     shuffle=True,
     # having crazy threading issues
@@ -173,26 +167,6 @@ history = model.fit_generator(
     validation_steps=100
 )
 
-acc = history.history['acc']
-val_acc = history.history['val_acc']
-loss = history.history['loss']
-val_loss = history.history['val_loss']
-
-epochs = range(1, len(acc) + 1)
-
-plt.plot(epochs, acc, 'bo', label='Training accuracy')
-plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
-plt.title('Training and Validation Accuracy')
-plt.legend()
-
-plt.figure()
-
-plt.plot(epochs, loss, 'bo', label='Training loss')
-plt.plot(epochs, val_loss, 'b', label='Validation loss')
-plt.title('Training and Validation Loss')
-plt.legend()
-
-plt.figure()
-
 # Save it for later
+print('Saving Model')
 model.save("nsfw." + str(width) + "x" + str(height) + ".h5")

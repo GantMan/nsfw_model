@@ -19,7 +19,7 @@ page = 0
 
 # CONFIGURE EACH RUN
 group = 'train'
-category_id = 2
+category_id = 1
 file_type = "jpg"
 
 def process_batch(batch_x, batch_y):
