@@ -19,8 +19,10 @@ page = 0
 
 # CONFIGURE EACH RUN
 group = 'train'
-category_id = 1
+category_id = 3
+mistaken_as = 4
 file_type = "jpg"
+
 
 def process_batch(batch_x, batch_y):
     print("Batch Check " + str(file_count))
@@ -33,8 +35,9 @@ def process_batch(batch_x, batch_y):
 
     for idx, prediction in enumerate(max_predictions):
         if prediction != category_id:
-            # log it!
-            mistakes.append(batch_y[idx])
+            # We have a mistake!  Do we log it?
+            if prediction == mistaken_as:
+                mistakes.append(batch_y[idx])
 
 # Copies categorization failures to the mistakes folder for analysis
 def copy_all_failures():
@@ -73,4 +76,4 @@ for image_file in Path(base_dir + "\\" + group + "\\" +
 
 process_batch(x_test, y_test)     
 copy_all_failures()   
-print('Out of ' + str(file_count) + ' images of "' + str(categories[category_id]) + '" ' + str(len(mistakes)) + ' are failures')
+print('Out of ' + str(file_count) + ' images of "' + str(categories[category_id]) + '" ' + str(len(mistakes)) + ' are mistaken as "' + str(categories[mistaken_as]) + '"')
