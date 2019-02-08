@@ -32,11 +32,11 @@ conv_base = InceptionV3(
 )
 
 # First time run, no unlocking
-#conv_base.trainable = False
+# conv_base.trainable = False
 # Let's unlock trainable layers in conv_base by name
 set_trainable = False
 for layer in conv_base.layers:
-    if layer.name == 'conv2d_94':
+    if layer.name == 'conv2d_86':
         set_trainable = True
     if set_trainable:
         layer.trainable = True
@@ -60,9 +60,9 @@ x - Dropout(0.4)(x)
 x = Flatten()(x)
 x = Dense(256, activation='relu', kernel_initializer=initializers.he_normal(seed=None), kernel_regularizer=regularizers.l2(.0005))(x)
 x = Dropout(0.5)(x)
-# I considered this since it will be hard to overfit a huge dataset, but simpler is better
-# x = Dense(128,activation='relu', kernel_initializer=initializers.he_normal(seed=None))(x)
-# x = Dropout(0.25)(x)
+# Essential to have another layer for better accuracy
+x = Dense(128,activation='relu', kernel_initializer=initializers.he_normal(seed=None))(x)
+x = Dropout(0.25)(x)
 predictions = Dense(num_classes,  kernel_initializer="glorot_uniform", activation='softmax')(x)
 
 print('Stacking New Layers')
@@ -83,15 +83,15 @@ tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
 # Slow down training deeper into dataset
 def schedule(epoch):
-    if epoch < 15:
+    if epoch < 10:
         return .01
-    elif epoch < 28:
+    elif epoch < 20:
         return .002
-    elif epoch < 68:
+    elif epoch < 40:
         return .0004
-    if epoch < 78:
+    if epoch < 60:
         return .00008
-    elif epoch < 88:
+    elif epoch < 80:
         return .000016
     else:
         return .0000032       
@@ -155,7 +155,7 @@ print('Start training!')
 history = model.fit_generator(
     train_generator,
     callbacks=callbacks_list,
-    epochs=110,
+    epochs=100,
     steps_per_epoch=500,
     shuffle=True,
     # having crazy threading issues
