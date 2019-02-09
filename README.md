@@ -1,4 +1,4 @@
-# NSFW Keras Model
+# NSFW Detection Model
 
 Trained on 60+ Gigs of data to identify:
 - `drawings` - safe for work drawings (including anime)
@@ -14,7 +14,9 @@ Trained on 60+ Gigs of data to identify:
 Review the `_art` folder for previous incarnations of this model.
 
 ## Download
-Please feel free to use this model to help your products!  If you'd like to [say thanks for creating this, I'll take a donation for hosting costs](https://www.paypal.me/GantLaborde).
+Please feel free to use this model to help your products!  
+
+If you'd like to [say thanks for creating this, I'll take a donation for hosting costs](https://www.paypal.me/GantLaborde).
 
 * [Latest Keras 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.h5)
 
@@ -25,11 +27,11 @@ Simple description of the scripts used to create this model:
 * `visuals.py` - The code to create the confusion matrix graphic
 * `self_clense.py` - The training data came down with some significant inaccuracy.  Self clense helped me use early iterations of the mode, to cross validate errors in the training data in reasonable time.   The better the model got, the better I could use it to clean the training data manually.  Most importantly, this also allowed me to clean the validation dataset, and get a real indication of generalized performance.
 
-### Extra
+## Extra Info
 There's no easy way to distribute the training data, but if you'd like to help with this model or train other models, get in touch with me and we can work together.  
 
-My twitter is [@GantLaborde](https://twitter.com/GantLaborde)
+My twitter is [@GantLaborde](https://twitter.com/GantLaborde) - I'm a School Of AI Wizard New Orleans.  I run the twitter account [@FunMachineLearn](https://twitter.com/FunMachineLearn)
 
-I run the twitter account [@FunMachineLearn](https://twitter.com/FunMachineLearn)
+Learn more about [me](http://gantlaborde.com/) and the [company I work for](https://infinite.red/).
 
-Thanks to the [nsfw_data_scraper](https://github.com/GantMan/nsfw_data_scrapper) for the training data.
+Special thanks to the [nsfw_data_scraper](https://github.com/GantMan/nsfw_data_scrapper) for the training data.
