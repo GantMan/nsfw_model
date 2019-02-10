@@ -41,4 +41,4 @@ My twitter is [@GantLaborde](https://twitter.com/GantLaborde) - I'm a School Of 
 
 Learn more about [me](http://gantlaborde.com/) and the [company I work for](https://infinite.red/).
 
-Special thanks to the [nsfw_data_scraper](https://github.com/GantMan/nsfw_data_scrapper) for the training data.
+Special thanks to the [nsfw_data_scraper](https://github.com/alexkimxyz/nsfw_data_scrapper) for the training data.
