@@ -21,7 +21,7 @@ If you'd like to [say thanks for creating this, I'll take a donation for hosting
 * [Keras 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.h5)
 * [TensorflowJS 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfwjs.zip)
 * [Tensorflow 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.pb)
-
+* _Contribute Here?  Quantize or convert the models_
 
 ## Repo Contents
 Simple description of the scripts used to create this model:
