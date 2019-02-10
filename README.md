@@ -1,4 +1,8 @@
-# NSFW Detection Model
+<center>
+<img src="https://github.com/GantMan/nsfw_model/blob/master/_art/nsfw_detection.png?raw=true" alt="NSFW Detector logo" width="300" />
+</center>
+
+# NSFW Detection Machine Learning Model
 
 Trained on 60+ Gigs of data to identify:
 - `drawings` - safe for work drawings (including anime)
