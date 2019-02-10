@@ -20,6 +20,7 @@ If you'd like to [say thanks for creating this, I'll take a donation for hosting
 
 * [Keras 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.h5)
 * [TensorflowJS 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfwjs.zip)
+* [Tensorflow 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.pb)
 
 
 ## Repo Contents
