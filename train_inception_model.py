@@ -36,7 +36,7 @@ conv_base = InceptionV3(
 # Let's unlock trainable layers in conv_base by name
 set_trainable = False
 for layer in conv_base.layers:
-    if layer.name == 'conv2d_86':
+    if layer.name == 'conv2d_56':
         set_trainable = True
     if set_trainable:
         layer.trainable = True
