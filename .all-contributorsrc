@@ -1,0 +1,22 @@
+{
+  "projectName": "nsfw_model",
+  "projectOwner": "GantMan",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "GantMan",
+      "name": "Gant Laborde",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/997157?v=4",
+      "profile": "http://gantlaborde.com/",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas"
+      ]
+    }
+  ]
+}
