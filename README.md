@@ -42,7 +42,7 @@ My twitter is [@GantLaborde](https://twitter.com/GantLaborde) - I'm a School Of 
 
 Learn more about [me](http://gantlaborde.com/) and the [company I work for](https://infinite.red/).
 
-Special thanks to the [nsfw_data_scraper](https://github.com/alexkimxyz/nsfw_data_scrapper) for the training data.
+Special thanks to the [nsfw_data_scraper](https://github.com/alexkimxyz/nsfw_data_scrapper) for the training data.  If you're interested in a more detailed analysis of types of NSFW images, you could probably use this repo code with [this data](https://github.com/EBazarov/nsfw_data_source_urls).
 
 ## Contributors
 
