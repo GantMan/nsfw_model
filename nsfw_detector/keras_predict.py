@@ -60,18 +60,25 @@ class keras_predictor():
             return {}
 
         model_preds = keras_predictor.nsfw_model.predict(loaded_images, batch_size = batch_size)
-        preds = np.argmax(model_preds, axis = 1)
+
+        preds = np.argsort(model_preds, axis = 1).tolist()
 
         probs = []
-        for i, pred in enumerate(preds):
-            probs.append(model_preds[i][pred])
+        for i, single_preds in enumerate(preds):
+            single_probs = []
+            for j, pred in enumerate(single_preds):
+                single_probs.append(model_preds[i][pred])
+                preds[i][j] = categories[pred]
+            
+            probs.append(single_probs)
 
-        preds = [categories[pred] for pred in preds]
         
         images_preds = {}
         
         for i, loaded_image_path in enumerate(loaded_image_paths):
-            images_preds[loaded_image_path] = {'class': preds[i], 'prob': probs[i]}
+            images_preds[loaded_image_path] = {}
+            for _ in range(len(preds[i])):
+                images_preds[loaded_image_path][preds[i][_]] = probs[i][_]
 
         return images_preds
 
@@ -79,7 +86,7 @@ class keras_predictor():
 if __name__ == '__main__':
     print('\n Enter path for the keras weights, leave empty to use "./nsfw.299x299.h5" \n')
     weights_path = input().strip()
-    if not weights_path: weights_path = "./nsfw.299x299.h5"
+    if not weights_path: weights_path = "../nsfw.299x299.h5"
     
     m = keras_predictor(weights_path)
 
