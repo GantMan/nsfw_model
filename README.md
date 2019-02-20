@@ -12,6 +12,8 @@ Trained on 60+ Gigs of data to identify:
 - `porn` - pornographic images, sexual acts
 - `sexy` - sexually explicit images, not pornography
 
+This model powers [NSFW JS](https://github.com/infinitered/nsfwjs) - [More Info](https://shift.infinite.red/avoid-nightmares-nsfw-js-ab7b176978b1)
+
 ## Current Status:
 91% Accuracy with the following confusion matrix, based on Inception V3.
 ![nsfw confusion matrix](_art/nsfw_confusion91.png)
