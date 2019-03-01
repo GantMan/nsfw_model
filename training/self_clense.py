@@ -19,8 +19,8 @@ page = 0
 
 # CONFIGURE EACH RUN
 group = 'train'
-category_id = 1
-mistaken_as = 0
+category_id = 3
+mistaken_as = 4
 file_type = "jpg"
 
 

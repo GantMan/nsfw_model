@@ -22,7 +22,10 @@ height = 299
 width = height
 num_channels = 3
 num_classes = 5
-GENERATOR_BATCH_SIZE = 16
+GENERATOR_BATCH_SIZE = 32
+TOTAL_EPOCHS = 100
+STEPS_PER_EPOCH = 500
+VALIDATION_STEPS = 100
 weights_file = "weights.best_inception" + str(height) + ".hdf5"
 
 conv_base = InceptionV3(
@@ -83,13 +86,16 @@ tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
 # Slow down training deeper into dataset
 def schedule(epoch):
-    if epoch < 10:
+    if epoch < 6:
+        # Warmup model first
+        return .0000032
+    elif epoch < 12:
         return .01
     elif epoch < 20:
         return .002
     elif epoch < 40:
         return .0004
-    if epoch < 60:
+    elif epoch < 60:
         return .00008
     elif epoch < 80:
         return .000016
@@ -155,8 +161,8 @@ print('Start training!')
 history = model.fit_generator(
     train_generator,
     callbacks=callbacks_list,
-    epochs=100,
-    steps_per_epoch=500,
+    epochs=TOTAL_EPOCHS,
+    steps_per_epoch=STEPS_PER_EPOCH,
     shuffle=True,
     # having crazy threading issues
     # set workers to zero if you see an error like: 
@@ -164,7 +170,7 @@ history = model.fit_generator(
     workers=0,
     use_multiprocessing=True,
     validation_data=validation_generator,
-    validation_steps=100
+    validation_steps=VALIDATION_STEPS
 )
 
 # Save it for later
