@@ -12,6 +12,8 @@ Trained on 60+ Gigs of data to identify:
 - `porn` - pornographic images, sexual acts
 - `sexy` - sexually explicit images, not pornography
 
+This model powers [NSFW JS](https://github.com/infinitered/nsfwjs) - [More Info](https://shift.infinite.red/avoid-nightmares-nsfw-js-ab7b176978b1)
+
 ## Current Status:
 91% Accuracy with the following confusion matrix, based on Inception V3.
 ![nsfw confusion matrix](_art/nsfw_confusion91.png)
@@ -24,7 +26,7 @@ keras (tested with versions > 2.0.0)
 tensorflow (Not specified in setup.py)
 
 ## Usage
-```
+```python
 from nsfw_detector import NSFWDetector
 detector = NSFWDetector('./nsfw.299x299.h5')
 
@@ -56,7 +58,9 @@ Simple description of the scripts used to create this model:
 * `self_clense.py` - The training data came down with some significant inaccuracy.  Self clense helped me use early iterations of the mode, to cross validate errors in the training data in reasonable time.   The better the model got, the better I could use it to clean the training data manually.  Most importantly, this also allowed me to clean the validation dataset, and get a real indication of generalized performance.
 
 ## Extra Info
-There's no easy way to distribute the training data, but if you'd like to help with this model or train other models, get in touch with me and we can work together.  
+There's no easy way to distribute the training data, but if you'd like to help with this model or train other models, get in touch with me and we can work together.
+
+Advancements in this model power the quantized TFJS module on https://nsfwjs.com/
 
 My twitter is [@GantLaborde](https://twitter.com/GantLaborde) - I'm a School Of AI Wizard New Orleans.  I run the twitter account [@FunMachineLearn](https://twitter.com/FunMachineLearn)
 
