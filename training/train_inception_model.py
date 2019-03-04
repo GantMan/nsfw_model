@@ -23,7 +23,7 @@ width = height
 num_channels = 3
 num_classes = 5
 GENERATOR_BATCH_SIZE = 32
-TOTAL_EPOCHS = 100
+TOTAL_EPOCHS = 10
 STEPS_PER_EPOCH = 500
 VALIDATION_STEPS = 100
 weights_file = "weights.best_inception" + str(height) + ".hdf5"
@@ -90,7 +90,7 @@ def schedule(epoch):
         # Warmup model first
         return .0000032
     elif epoch < 12:
-        return .01
+        return .0000009
     elif epoch < 20:
         return .002
     elif epoch < 40:
@@ -154,8 +154,8 @@ validation_generator = validation_datagen.flow_from_directory(
 
 # Comment in this line if you're looking to reload the last model for training
 # Essentially, not taking the best validation weights but to add more epochs
-# print ('Starting from last full model run')
-# model = load_model("nsfw." + str(width) + "x" + str(height) + ".h5")
+print ('Starting from last full model run')
+model = load_model("nsfw." + str(width) + "x" + str(height) + ".h5")
 
 print('Start training!')
 history = model.fit_generator(

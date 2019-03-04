@@ -18,9 +18,9 @@ batch_size = 1000
 page = 0
 
 # CONFIGURE EACH RUN
-group = 'train'
-category_id = 3
-mistaken_as = 4
+group = 'test'
+category_id = 1
+mistaken_as = 0
 file_type = "jpg"
 
 
