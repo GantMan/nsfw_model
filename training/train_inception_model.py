@@ -154,8 +154,8 @@ validation_generator = validation_datagen.flow_from_directory(
 
 # Comment in this line if you're looking to reload the last model for training
 # Essentially, not taking the best validation weights but to add more epochs
-print ('Starting from last full model run')
-model = load_model("nsfw." + str(width) + "x" + str(height) + ".h5")
+# print ('Starting from last full model run')
+# model = load_model("nsfw." + str(width) + "x" + str(height) + ".h5")
 
 print('Start training!')
 history = model.fit_generator(
