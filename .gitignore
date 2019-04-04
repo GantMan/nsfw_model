@@ -2,3 +2,4 @@
 *.h5
 logs/
 .vscode/
+__pycache__
