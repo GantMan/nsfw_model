@@ -51,7 +51,7 @@ If you'd like to [say thanks for creating this, I'll take a donation for hosting
 * [Tensorflow 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.pb)
 * _Contribute Here?  Convert the model!_
 
-## Training Folders
+## Training Folder Contents
 Simple description of the scripts used to create this model:
 * `inceptionv3_transfer/` - Folder with all the code to train the Keras based Inception v3 transfer learning model.  Includes `constants.py` for configuration, and two scripts for actual training/refinement.
 * `visuals.py` - The code to create the confusion matrix graphic
