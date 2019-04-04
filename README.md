@@ -51,11 +51,24 @@ If you'd like to [say thanks for creating this, I'll take a donation for hosting
 * [Tensorflow 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.pb)
 * _Contribute Here?  Convert the model!_
 
-## Repo Contents
+## Training Folders
 Simple description of the scripts used to create this model:
-* `train_inception_model.py` - The code used to train the Keras based Inception V3 Transfer learned model.
+* `inceptionv3_transfer/` - Folder with all the code to train the Keras based Inception v3 transfer learning model.  Includes `constants.py` for configuration, and two scripts for actual training/refinement.
 * `visuals.py` - The code to create the confusion matrix graphic
-* `self_clense.py` - The training data came down with some significant inaccuracy.  Self clense helped me use early iterations of the mode, to cross validate errors in the training data in reasonable time.   The better the model got, the better I could use it to clean the training data manually.  Most importantly, this also allowed me to clean the validation dataset, and get a real indication of generalized performance.
+* `self_clense.py` - If the training data has significant inaccuracy, `self_clense` helps cross validate errors in the training data in reasonable time.   The better the model gets, the better you can use it to clean the training data manually.
+
+_e.g._
+```bash
+cd training
+# Start with all locked transfer of Inception v3
+python inceptionv3_transfer/train_initialization.py
+
+# Continue training on model with fine-tuning
+python inceptionv3_transfer/train_fine_tune.py
+
+# Create a confusion matrix of the model
+python visuals.py
+```
 
 ## Extra Info
 There's no easy way to distribute the training data, but if you'd like to help with this model or train other models, get in touch with me and we can work together.
