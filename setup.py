@@ -15,8 +15,8 @@ from setuptools import find_packages, setup, Command
 NAME = 'nsfw_detector'
 DESCRIPTION = 'NSFW Image Detection with Deep Learning'
 URL = 'https://github.com/GantMan/nsfw_model'
-EMAIL = 'your_email_here'
-AUTHOR = 'your_name_here'
+EMAIL = 'gantman@gmail.com'
+AUTHOR = 'Gant Laborde'
 REQUIRES_PYTHON = '>=3.5.0'
 VERSION = '1.0.0'
 
@@ -87,7 +87,7 @@ class UploadCommand(Command):
         self.status('Pushing git tags…')
         os.system('git tag v{0}'.format(about['__version__']))
         os.system('git push --tags')
-        
+
         sys.exit()
 
 
