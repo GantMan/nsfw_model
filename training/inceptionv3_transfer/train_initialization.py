@@ -47,7 +47,7 @@ x = Dropout(0.25)(x)
 predictions = Dense(constants.NUM_CLASSES,  kernel_initializer="glorot_uniform", activation='softmax')(x)
 
 print('Stacking New Layers')
-model=Model(inputs = conv_base.input, outputs=predictions)
+model = Model(inputs = conv_base.input, outputs=predictions)
 
 # Load checkpoint if one is found
 if os.path.exists(weights_file):
