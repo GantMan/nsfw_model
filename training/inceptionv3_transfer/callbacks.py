@@ -1,5 +1,6 @@
-from keras.callbacks import ModelCheckpoint, TensorBoard, LearningRateScheduler
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard, LearningRateScheduler
 from time import time
+from tensorflow_model_optimization.sparsity import keras as sparsity
 
 # Slow down training deeper into dataset
 def schedule(epoch):
@@ -23,16 +24,23 @@ def schedule(epoch):
 
 
 def make_callbacks(weights_file):
+    current_log_dir = "logs/{}".format(time())
     # checkpoint
     filepath = weights_file
     checkpoint = ModelCheckpoint(
         filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 
     # Update info
-    tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
+    #tensorboard = TensorBoard(log_dir=current_log_dir)
 
     # learning rate schedule
     lr_scheduler = LearningRateScheduler(schedule)
 
     # all the goodies
-    return [lr_scheduler, checkpoint, tensorboard]
+    return [
+        lr_scheduler, 
+        checkpoint, 
+        #tensorboard,
+        sparsity.UpdatePruningStep(),
+        #sparsity.PruningSummaries(log_dir=current_log_dir, profile_batch=0)
+    ]

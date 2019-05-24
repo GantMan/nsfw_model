@@ -1,9 +1,10 @@
 import os
-from keras.preprocessing.image import ImageDataGenerator
-from keras.backend import clear_session
-from keras.optimizers import SGD
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.backend import clear_session
+from tensorflow.keras.optimizers import SGD
 from pathlib import Path
-from keras.models import Sequential, Model, load_model
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow_model_optimization.sparsity import keras as sparsity
 
 # reusable stuff
 import constants
@@ -73,4 +74,5 @@ history = model.fit_generator(
 
 # Save it for later
 print('Saving Model')
-model.save("nsfw." + str(width) + "x" + str(height) + ".h5")
+final_model = sparsity.strip_pruning(model)
+final_model.save("nsfw." + str(width) + "x" + str(height) + ".h5")
