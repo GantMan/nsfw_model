@@ -42,49 +42,60 @@ conv_base.trainable = False
 print('Summary')
 print(conv_base.summary())
 
-# Trying sparcity 
-pruning_params = {
-    'pruning_schedule': sparsity.ConstantSparsity(0.5, 0),
-    'block_size': (1, 1),
-    'block_pooling_type': 'AVG'
-}
-
-# Let's construct that top layer replacement
-x = conv_base.output
-x = AveragePooling2D(pool_size=(8, 8))(x)
-x = Dropout(0.4)(x)
-x = Flatten()(x)
-x = Dense(256, activation='relu', kernel_initializer=tf.compat.v1.keras.initializers.he_normal(seed=None), kernel_regularizer=regularizers.l2(.0005))(x)
-x = Dropout(0.5)(x)
-# Essential to have another layer for better accuracy
-x = Dense(128,activation='relu', kernel_initializer=initializers.he_normal(seed=None))(x)
-x = Dropout(0.25)(x)
-predictions = Dense(constants.NUM_CLASSES,  kernel_initializer="glorot_uniform", activation='softmax')(x)
-
-print('Stacking New Layers')
-model = sparsity.prune_low_magnitude(Model(inputs = conv_base.input, outputs=predictions), **pruning_params)
-#model = Model(inputs = conv_base.input, outputs=predictions)
-
-# Load checkpoint if one is found
-# if os.path.exists(weights_file):
-#         print ("loading ", weights_file)
-#         model.load_weights(weights_file)
-
-# Get all model callbacks
-callbacks_list = callbacks.make_callbacks(weights_file)
-
-print('Compile model')
-# originally adam, but research says SGD with scheduler
-# opt = Adam(lr=0.001, amsgrad=True)
-opt = SGD(momentum=.9)
-model.compile(
-    loss='categorical_crossentropy',
-    optimizer=opt,
-    metrics=['accuracy']
-)
-
 # Get training/validation data via generators
 train_generator, validation_generator = generators.create_generators(height, width)
+
+def model_fn()
+    DROPOUT_RATE = Linear('dropout_rate', 0.0, 0.5, 5, group="dense")
+    L1_NUM_DIMS = Range('num_dims', 32, 256, 32, group="dense")
+    L2_NUM_DIMS = Range('num_dims', 32, 128, 32, group="dense")
+    MOMENTUM = Choice('momentum', [0.1, 0.4, 0.8, 0.9, 0.95], group="optimizer")
+
+    # Sparcity 
+    pruning_params = {
+        'pruning_schedule': sparsity.ConstantSparsity(0.5, 0),
+        'block_size': (1, 1),
+        'block_pooling_type': 'AVG'
+    }
+
+    # Let's construct that top layer replacement
+    x = conv_base.output
+    x = AveragePooling2D(pool_size=(8, 8))(x)
+    x = Dropout(DROPOUT_RATE)(x)
+    x = Flatten()(x)
+    x = Dense(L1_NUM_DIMS, activation='relu', kernel_initializer=tf.compat.v1.keras.initializers.he_normal(seed=None), kernel_regularizer=regularizers.l2(.0005))(x)
+    x = Dropout(DROPOUT_RATE)(x)
+    # Essential to have another layer for better accuracy
+    x = Dense(L2_NUM_DIMS,activation='relu', kernel_initializer=initializers.he_normal(seed=None))(x)
+    x = Dropout(DROPOUT_RATE)(x)
+    predictions = Dense(constants.NUM_CLASSES,  kernel_initializer="glorot_uniform", activation='softmax')(x)
+
+    print('Stacking New Layers')
+    model = sparsity.prune_low_magnitude(Model(inputs = conv_base.input, outputs=predictions), **pruning_params)
+    # Normal non pruned model = Model(inputs = conv_base.input, outputs=predictions)
+
+    # Load checkpoint if one is found
+    # if os.path.exists(weights_file):
+    #         print ("loading ", weights_file)
+    #         model.load_weights(weights_file)
+
+    # Get all model callbacks
+    callbacks_list = callbacks.make_callbacks(weights_file)
+
+    print('Compile model')
+    # originally adam, but research says SGD with scheduler
+    # opt = Adam(lr=0.001, amsgrad=True)
+    opt = SGD(momentum=MOMENTUM)
+    model.compile(
+        loss='categorical_crossentropy',
+        optimizer=opt,
+        metrics=['accuracy']
+    )
+    return model
+
+print('Start tuning')
+tuner = Tuner(model_fn, 'val_accuracy', epoch_budget=500, max_epochs=10)
+tuner.search(tfg.validation_data=validation_generator)
 
 print('Start training!')
 history = model.fit_generator(
