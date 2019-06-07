@@ -43,7 +43,6 @@ print(conv_base.summary())
 # Let's construct that top layer replacement
 x = conv_base.output
 x = AveragePooling2D(pool_size=(7, 7))(x)
-x - Dropout(0.4)(x)
 x = Flatten()(x)
 x = Dense(256, activation='relu', kernel_initializer=initializers.he_normal(seed=None), kernel_regularizer=regularizers.l2(.0005))(x)
 x = Dropout(0.5)(x)
