@@ -77,11 +77,8 @@ history = model.fit_generator(
     epochs=constants.TOTAL_EPOCHS,
     steps_per_epoch=constants.STEPS_PER_EPOCH,
     shuffle=True,
-    # having crazy threading issues
-    # set workers to zero if you see an error like: 
-    # `freeze_support()`
-    workers=0,
-    use_multiprocessing=True,
+    workers=4,
+    use_multiprocessing=False,
     validation_data=validation_generator,
     validation_steps=constants.VALIDATION_STEPS
 )
