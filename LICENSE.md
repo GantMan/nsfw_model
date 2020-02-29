@@ -1,3 +1,6 @@
+This project contains third-party copyrighted material under different licenses.
+Except where otherwise explicitly stated, this project is licensed as follows:
+
 MIT License
 
 Copyright (c) 2020 The nsfw_model Developers
