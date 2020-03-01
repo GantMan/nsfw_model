@@ -155,7 +155,7 @@ def _get_data_with_keras(image_dir, image_size, batch_size,
 			sorted_labels)
 
 
-def _image_size_for_module(module_layer, requested_image_size=None, legacy=False):
+def _image_size_for_module(module_layer, requested_image_size=None):
 	"""Returns the input image size to use with the given module.
 
 	Args:
@@ -177,14 +177,9 @@ def _image_size_for_module(module_layer, requested_image_size=None, legacy=False
 	# The stop-gap code below assumes any concrete function backing the
 	# module call will accept a batch of images with the one accepted size.
 
-	module_image_size = None
-
-	if legacy is True:
-		module_image_size = (224, 224)
-	else:
-		module_image_size = tuple(
-		module_layer._func.__call__	# pylint:disable=protected-access
-		.concrete_functions[0].structured_input_signature[0][0].shape[1:3])
+	module_image_size = tuple(
+	module_layer._func.__call__	# pylint:disable=protected-access
+	.concrete_functions[0].structured_input_signature[0][0].shape[1:3])
 	
 	if requested_image_size is None:
 		if None in module_image_size:
@@ -396,7 +391,7 @@ def model_to_frozen_graph(model):
 	return output_graph
 
 def make_image_classifier(tfhub_module, image_dir, hparams,
-							requested_image_size=None, formatIsOld=False):
+							requested_image_size=None, saveModelDir=False):
 	"""Builds and trains a TensorFLow model for image classification.
 
 	Args:
@@ -409,16 +404,9 @@ def make_image_classifier(tfhub_module, image_dir, hparams,
 		must be omitted or set to that same value.
 	"""
 
-	module_layer = None
-
-	if formatIsOld is True:
-		print("DOING THE COMPAT WRAPPER")
-		module_layer = hub.KerasLayer(Wrapper(tfhub_module))
-	else:
-		module_layer = hub.KerasLayer(tfhub_module, trainable=hparams.do_fine_tuning)
-
+	module_layer = hub.KerasLayer(tfhub_module, trainable=hparams.do_fine_tuning)
 	
-	image_size = _image_size_for_module(module_layer, requested_image_size, formatIsOld)
+	image_size = _image_size_for_module(module_layer, requested_image_size)
 	print("Using module {} with image size {}".format(
 		tfhub_module, image_size))
 	train_data_and_size, valid_data_and_size, labels = _get_data_with_keras(
@@ -426,6 +414,18 @@ def make_image_classifier(tfhub_module, image_dir, hparams,
 	print("Found", len(labels), "classes:", ", ".join(labels))
 
 	model = build_model(module_layer, hparams, image_size, len(labels))
+
+	# If we are fine-tuning, check and see if weights
+	# already exists at the output directory. This way, a user
+	# can simply run two consecutive training sessions. One without
+	# fine-tuning, followed by another with.
+	if hparams.do_fine_tuning:
+		if saveModelDir is not None:
+			existingWeightsPath = os.path.join(saveModelDir, "saved_model_weights.h5")
+			if os.path.exists(existingWeightsPath):
+				print("Loading existing weights for fine-tuning")
+				model.load_weights(existingWeightsPath)
+
 	train_result = train_model(model, hparams, train_data_and_size,
 							 valid_data_and_size)
 

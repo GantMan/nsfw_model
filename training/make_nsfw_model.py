@@ -194,7 +194,7 @@ def main(args):
 	image_dir = FLAGS.image_dir or lib.get_default_image_dir()
 
 	model, labels, train_result, frozen_graph = lib.make_image_classifier(
-			FLAGS.tfhub_module, image_dir, hparams, FLAGS.image_size, FLAGS.is_deprecated_tfhub_module)
+			FLAGS.tfhub_module, image_dir, hparams, FLAGS.image_size, FLAGS.saved_model_dir)
 	if FLAGS.assert_accuracy_at_least:
 		_assert_accuracy(train_result, FLAGS.assert_accuracy_at_least)
 	print("Done with training.")
@@ -218,7 +218,7 @@ def main(args):
 		Path(saved_model_dir).mkdir(parents=True, exist_ok=True)
 		tf.saved_model.save(model, saved_model_dir)
 		keras_model_path = os.path.join(saved_model_dir, "saved_model.h5")
-		weights_path = os.path.join(saved_model_dir, "saved_model_weights.pb")
+		weights_path = os.path.join(saved_model_dir, "saved_model_weights.h5")
 		model.save(keras_model_path)
 		model.save_weights(weights_path)
 		print("SavedModel model exported to", saved_model_dir)
