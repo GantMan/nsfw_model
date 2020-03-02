@@ -6,3 +6,8 @@ __pycache__
 dist
 build
 *.egg-info
+images/**
+!images/ReadMe.md
+# Ignore my Visual Studio solution for editing python
+NSFWModel/**
+trained_models/**

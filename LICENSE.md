@@ -1,6 +1,9 @@
+This project contains third-party copyrighted material under different licenses.
+Except where otherwise explicitly stated, this project is licensed as follows:
+
 MIT License
 
-Copyright (c) 2019 Gant Laborde
+Copyright (c) 2020 The nsfw_model Developers
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
