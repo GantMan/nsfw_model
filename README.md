@@ -53,13 +53,16 @@ Please feel free to use this model to help your products!
 
 If you'd like to [say thanks for creating this, I'll take a donation for hosting costs](https://www.paypal.me/GantLaborde).
 
-### Inception v3 Model
+# Latest Models Zip (v1.1)
+https://github.com/GantMan/nsfw_model/releases/tag/1.1.0
+
+### Original Inception v3 Model (v1.0)
 * [Keras 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.h5)
 * [TensorflowJS 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfwjs.zip)
 * [TensorflowJS Quantized 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/min_nsfwjs.zip)
 * [Tensorflow 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.pb) - [Graph if Needed](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/graph_transforms#inspecting-graphs)
 
-### Mobilenet v2 Model
+### Original Mobilenet v2 Model (v1.0)
 * [Keras 224x224 Image Model](https://s3.amazonaws.com/ir_public/nsfwjscdn/nsfw_mobilenet2.224x224.h5)
 * [TensorflowJS 224x224 Image Model](https://s3.amazonaws.com/ir_public/nsfwjscdn/TFJS_nsfw_mobilenet/tfjs_nsfw_mobilenet.zip)
 * [TensorflowJS Quantized 224x224 Image Model](https://s3.amazonaws.com/ir_public/nsfwjscdn/TFJS_nsfw_mobilenet/tfjs_quant_nsfw_mobilenet.zip)
