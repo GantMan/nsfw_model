@@ -11,3 +11,4 @@ images/**
 # Ignore my Visual Studio solution for editing python
 NSFWModel/**
 trained_models/**
+training/train_best_models.cmd
