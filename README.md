@@ -134,6 +134,7 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 - remove classic app run modes for argparse
 - one more example in README for running
 - turn down verbosity in image load via file
+- fix requirements for clean system (needs PIL)
 
 ## 1.1.0
 
