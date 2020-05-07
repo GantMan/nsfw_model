@@ -133,6 +133,7 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 - break out numpy (nd array) function
 - remove classic app run modes for argparse
 - one more example in README for running
+- turn down verbosity in image load via file
 
 ## 1.1.0
 

@@ -11,12 +11,13 @@ from tensorflow import keras
 
 IMAGE_DIM = 224   # required/default image dimensionality
 
-def load_images(image_paths, image_size):
+def load_images(image_paths, image_size, verbose=True):
     '''
     Function for loading images into numpy arrays for passing to model.predict
     inputs:
         image_paths: list of image paths to load
         image_size: size into which images should be resized
+        verbose: show all of the image path and sizes loaded
     
     outputs:
         loaded_images: loaded images on which keras model can run predictions
@@ -34,7 +35,8 @@ def load_images(image_paths, image_size):
 
     for img_path in image_paths:
         try:
-            print(img_path, "size:", image_size)
+            if verbose:
+                print(img_path, "size:", image_size)
             image = keras.preprocessing.image.load_img(img_path, target_size=image_size)
             image = keras.preprocessing.image.img_to_array(image)
             image /= 255
