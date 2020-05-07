@@ -1,6 +1,5 @@
 #! python
 
-from absl import app
 import argparse
 import json
 from os import listdir
@@ -58,30 +57,25 @@ def load_model(model_path):
 def classify(model, input_paths, image_dim=IMAGE_DIM):
     """ Classify given a model, input paths (could be single string), and image dimensionality...."""
     images, image_paths = load_images(input_paths, (image_dim, image_dim))
+    probs = classify_nd(model, images)
+    return dict(zip(image_paths, probs))
 
-    model_preds = model.predict(images)
-    
-    preds = np.argsort(model_preds, axis = 1).tolist()
-    
-    probs = []
 
+def classify_nd(model, nd_images):
+    """ Classify given a model, image array (numpy)...."""
+
+    model_preds = model.predict(nd_images)
+    # preds = np.argsort(model_preds, axis = 1).tolist()
+    
     categories = ['drawings', 'hentai', 'neutral', 'porn', 'sexy']
 
-    for i, single_preds in enumerate(preds):
-        single_probs = []
+    probs = []
+    for i, single_preds in enumerate(model_preds):
+        single_probs = {}
         for j, pred in enumerate(single_preds):
-            single_probs.append(model_preds[i][pred])
-            preds[i][j] = categories[pred]
-        
+            single_probs[categories[j]] = float(pred)
         probs.append(single_probs)
-    
-    images_preds = {}
-    
-    for i, loaded_image_path in enumerate(image_paths):
-        images_preds[loaded_image_path] = {}
-        for _ in range(len(preds[i])):
-            images_preds[loaded_image_path][preds[i][_]] = str(probs[i][_])
-    return images_preds
+    return probs
 
 
 def main(args=None):
@@ -109,11 +103,8 @@ def main(args=None):
     
     model = load_model(config['saved_model_path'])    
     image_preds = classify(model, config['image_source'], config['image_dim'])
-    print(json.dumps(image_preds, sort_keys=True, indent=2), '\n')
+    print(json.dumps(image_preds, indent=2), '\n')
 
-
-def run_main():
-	app.run(main)
 
 if __name__ == "__main__":
-	run_main()
+	main()

@@ -45,14 +45,17 @@ predict.classify(model, '/Users/bedapudi/Desktop/')
 
 ```
 
-If you've installed the package, this should work, too...
+If you've installed the package or use the command-line this should work, too...
 
 ```sh
 # a single image
-nsfw-predict --saved_model_path mobilenet_v2_140_224 --image_source images
+nsfw-predict --saved_model_path mobilenet_v2_140_224 --image_source test.jpg
 
 # an image directory
 nsfw-predict --saved_model_path mobilenet_v2_140_224 --image_source images
+
+# a single image (from code/CLI)
+python3 nsfw_detector/predict.py --saved_model_path mobilenet_v2_140_224 --image_source test.jpg
 
 ```
 
@@ -124,6 +127,12 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
 
 # Changes
+
+## 1.1.1
+
+- break out numpy (nd array) function
+- remove classic app run modes for argparse
+- one more example in README for running
 
 ## 1.1.0
 
