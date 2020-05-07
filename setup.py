@@ -18,12 +18,7 @@ URL = 'https://github.com/GantMan/nsfw_model'
 EMAIL = 'gantman@gmail.com'
 AUTHOR = 'Gant Laborde'
 REQUIRES_PYTHON = '>=3.5.0'
-VERSION = '1.0.0'
-
-# What packages are required for this module to be executed?
-REQUIRED = [
-    'keras'
-]
+VERSION = '1.1.0'
 
 # What packages are optional?
 EXTRAS = {
@@ -36,6 +31,16 @@ EXTRAS = {
 # If you do change the License, remember to change the Trove Classifier for that!
 
 here = os.path.abspath(os.path.dirname(__file__))
+
+# Import the requirements.
+REQUIRED = []
+try:
+    with io.open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
+        for line_req in f:
+            if line_req[0] != '#':
+                REQUIRED.append(line_req.strip())
+except FileNotFoundError:
+    REQUIRED = []
 
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
@@ -125,6 +130,10 @@ setup(
     ],
     # $ setup.py publish support.
     cmdclass={
-        'upload': UploadCommand,
+        'upload': UploadCommand
     },
+    entry_points="""
+        [console_scripts]
+        nsfw-predict=nsfw_detector.predict:main
+    """
 )

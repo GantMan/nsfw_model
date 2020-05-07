@@ -1,28 +1,16 @@
+#! python
+
 from absl import app
-from absl import flags
-from absl import logging
-from tensorflow import keras
-import numpy as np
+import argparse
 import json
 from os import listdir
 from os.path import isfile, join, exists, isdir, abspath
+
+import numpy as np
 import tensorflow as tf
+from tensorflow import keras
 
-IMAGE_DIM = 224
-flags.DEFINE_string(
-		"image_source", None,
-		"A directory of images or a single image to classify.")
-flags.DEFINE_string(
-		"saved_model_path",
-		None,
-		"The model to load.")
-flags.DEFINE_integer(
-    "image_dim",
-    IMAGE_DIM,
-    "The square dimension of the model's input shape."
-    )
-
-FLAGS = flags.FLAGS
+IMAGE_DIM = 224   # required/default image dimensionality
 
 def load_images(image_paths, image_size):
     '''
@@ -96,14 +84,31 @@ def classify(model, input_paths, image_dim=IMAGE_DIM):
     return images_preds
 
 
-def main(args):
-    del args
+def main(args=None):
+    parser = argparse.ArgumentParser(
+        description="""A script to perform NFSW classification of images""",
+        epilog="""
+        Launch with default model and a test image
+            python nsfw_detector/predict.py --saved_model_path mobilenet_v2_140_224 --image_source test.jpg
+    """, formatter_class=argparse.RawTextHelpFormatter)
     
-    if FLAGS.image_source is None or not exists(FLAGS.image_source):
+    submain = parser.add_argument_group('main execution and evaluation functionality')
+    submain.add_argument('--image_source', dest='image_source', type=str, required=True, 
+                            help='A directory of images or a single image to classify')
+    submain.add_argument('--saved_model_path', dest='saved_model_path', type=str, required=True, 
+                            help='The model to load')
+    submain.add_argument('--image_dim', dest='image_dim', type=int, default=IMAGE_DIM,
+                            help="The square dimension of the model's input shape")
+    if args is not None:
+        config = vars(parser.parse_args(args))
+    else:
+        config = vars(parser.parse_args())
+
+    if config['image_source'] is None or not exists(config['image_source']):
     	raise ValueError("image_source must be a valid directory with images or a single image to classify.")
     
-    model = load_model(FLAGS.saved_model_path)    
-    image_preds = classify(model, FLAGS.image_source, FLAGS.image_dim)
+    model = load_model(config['saved_model_path'])    
+    image_preds = classify(model, config['image_source'], config['image_dim'])
     print(json.dumps(image_preds, sort_keys=True, indent=2), '\n')
 
 
