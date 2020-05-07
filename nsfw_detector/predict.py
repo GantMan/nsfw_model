@@ -1,29 +1,24 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 from absl import app
 from absl import flags
 from absl import logging
-from pathlib import Path
 from tensorflow import keras
 import numpy as np
-import os
 import json
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, exists, isdir, abspath
 import tensorflow as tf
 
+IMAGE_DIM = 224
 flags.DEFINE_string(
-		"image_dir", None,
-		"A directory of images to classify.")
+		"image_source", None,
+		"A directory of images or a single image to classify.")
 flags.DEFINE_string(
 		"saved_model_path",
 		None,
 		"The model to load.")
 flags.DEFINE_integer(
     "image_dim",
-    224,
+    IMAGE_DIM,
     "The square dimension of the model's input shape."
     )
 
@@ -44,40 +39,38 @@ def load_images(image_paths, image_size):
     loaded_images = []
     loaded_image_paths = []
 
-    if os.path.isdir(image_paths):
-        print('wut')
-        parent = image_paths
+    if isdir(image_paths):
+        parent = abspath(image_paths)
         image_paths = [join(parent, f) for f in listdir(image_paths) if isfile(join(parent, f))]
-    else:
-        print('wut1')
+    elif isfile(image_paths):
         image_paths = [image_paths]
 
-    for i, img_path in enumerate(image_paths):
+    for img_path in image_paths:
         try:
-            print(img_path)
-            image = keras.preprocessing.image.load_img(img_path, target_size = image_size)
+            print(img_path, "size:", image_size)
+            image = keras.preprocessing.image.load_img(img_path, target_size=image_size)
             image = keras.preprocessing.image.img_to_array(image)
             image /= 255
             loaded_images.append(image)
             loaded_image_paths.append(img_path)
         except Exception as ex:
-            print(i, img_path, ex)
+            print("Image Load Failure: ", img_path, ex)
     
     return np.asarray(loaded_images), loaded_image_paths
 
-def main(args):
-    del args
-    
-    if FLAGS.image_dir is None or not os.path.exists(FLAGS.image_dir):
-    	raise ValueError("image_dir must be a valid directory with images to classify.")
-    
-    if FLAGS.saved_model_path is None or not os.path.exists(FLAGS.image_dir):
+
+def load_model(model_path):
+    if model_path is None or not exists(model_path):
     	raise ValueError("saved_model_path must be the valid directory of a saved model to load.")
     
-    model = tf.keras.models.load_model(FLAGS.saved_model_path)
-    
-    images, image_paths = load_images(FLAGS.image_dir, (FLAGS.image_dim, FLAGS.image_dim))
-    
+    model = tf.keras.models.load_model(model_path)
+    return model
+
+
+def classify(model, input_paths, image_dim=IMAGE_DIM):
+    """ Classify given a model, input paths (could be single string), and image dimensionality...."""
+    images, image_paths = load_images(input_paths, (image_dim, image_dim))
+
     model_preds = model.predict(images)
     
     preds = np.argsort(model_preds, axis = 1).tolist()
@@ -94,15 +87,25 @@ def main(args):
         
         probs.append(single_probs)
     
-    
     images_preds = {}
     
     for i, loaded_image_path in enumerate(image_paths):
         images_preds[loaded_image_path] = {}
         for _ in range(len(preds[i])):
             images_preds[loaded_image_path][preds[i][_]] = str(probs[i][_])
+    return images_preds
+
+
+def main(args):
+    del args
     
-    print(json.dumps(images_preds, sort_keys=True, indent=2), '\n')
+    if FLAGS.image_source is None or not exists(FLAGS.image_source):
+    	raise ValueError("image_source must be a valid directory with images or a single image to classify.")
+    
+    model = load_model(FLAGS.saved_model_path)    
+    image_preds = classify(model, FLAGS.image_source, FLAGS.image_dim)
+    print(json.dumps(image_preds, sort_keys=True, indent=2), '\n')
+
 
 def run_main():
 	app.run(main)
