@@ -128,6 +128,47 @@ flags.DEFINE_float(
 flags.DEFINE_bool(
 		"is_deprecated_tfhub_module", False,
 		"Whether or not the supplied TF hub module is old and from Tensorflow 1.")
+flags.DEFINE_float(
+		"label_smoothing", _DEFAULT_HPARAMS.label_smoothing,
+		"The degree of label smoothing to use.")
+flags.DEFINE_float(
+		"validation_split", _DEFAULT_HPARAMS.validation_split,
+		"The percentage of data to use for validation.")
+flags.DEFINE_string(
+    'optimizer', _DEFAULT_HPARAMS.optimizer,
+    'The name of the optimizer, one of "adadelta", "adagrad", "adam",'
+    '"ftrl", "momentum", "sgd" or "rmsprop".')
+flags.DEFINE_float(
+    'adadelta_rho', _DEFAULT_HPARAMS.adadelta_rho,
+    'The decay rate for adadelta.')
+flags.DEFINE_float(
+    'adagrad_initial_accumulator_value', _DEFAULT_HPARAMS.adagrad_initial_accumulator_value,
+    'Starting value for the AdaGrad accumulators.')
+flags.DEFINE_float(
+    'adam_beta1', _DEFAULT_HPARAMS.adam_beta1,
+    'The exponential decay rate for the 1st moment estimates.')
+flags.DEFINE_float(
+    'adam_beta2', _DEFAULT_HPARAMS.adam_beta2,
+    'The exponential decay rate for the 2nd moment estimates.')
+flags.DEFINE_float('opt_epsilon', _DEFAULT_HPARAMS.opt_epsilon, 'Epsilon term for the optimizer.')
+flags.DEFINE_float('ftrl_learning_rate_power', _DEFAULT_HPARAMS.ftrl_learning_rate_power,
+                          'The learning rate power.')
+flags.DEFINE_float(
+    'ftrl_initial_accumulator_value', _DEFAULT_HPARAMS.ftrl_initial_accumulator_value,
+    'Starting value for the FTRL accumulators.')
+flags.DEFINE_float(
+    'ftrl_l1', _DEFAULT_HPARAMS.ftrl_l1, 'The FTRL l1 regularization strength.')
+
+flags.DEFINE_float(
+    'ftrl_l2', _DEFAULT_HPARAMS.ftrl_l2, 'The FTRL l2 regularization strength.')
+flags.DEFINE_float('rmsprop_momentum', _DEFAULT_HPARAMS.rmsprop_momentum, 'Momentum.')
+flags.DEFINE_float('rmsprop_decay', _DEFAULT_HPARAMS.rmsprop_decay, 'Decay term for RMSProp.')
+flags.DEFINE_bool(
+		"do_data_augmentation", False,
+		"Whether or not to do data augmentation.")
+flags.DEFINE_bool(
+		"use_mixed_precision", False,
+		"Whether or not to use NVIDIA mixed precision. Requires NVIDIA card with at least compute level 7.0")
 
 FLAGS = flags.FLAGS
 
@@ -140,7 +181,26 @@ def _get_hparams_from_flags():
 			batch_size=FLAGS.batch_size,
 			learning_rate=FLAGS.learning_rate,
 			momentum=FLAGS.momentum,
-			dropout_rate=FLAGS.dropout_rate)
+			dropout_rate=FLAGS.dropout_rate,
+			label_smoothing=FLAGS.label_smoothing,
+			validation_split=FLAGS.validation_split,
+			optimizer=FLAGS.optimizer,
+			adadelta_rho=FLAGS.adadelta_rho,
+			adagrad_initial_accumulator_value=FLAGS.adagrad_initial_accumulator_value,
+			adam_beta1=FLAGS.adam_beta1,
+			adam_beta2=FLAGS.adam_beta2,
+			opt_epsilon=FLAGS.opt_epsilon,
+			ftrl_learning_rate_power=FLAGS.ftrl_learning_rate_power,
+			ftrl_initial_accumulator_value=FLAGS.ftrl_initial_accumulator_value,
+			ftrl_l1=FLAGS.ftrl_l1,
+			ftrl_l2=FLAGS.ftrl_l2,
+			rmsprop_momentum=FLAGS.rmsprop_momentum,
+			rmsprop_decay=FLAGS.rmsprop_decay,
+			do_data_augmentation=FLAGS.do_data_augmentation,
+			use_mixed_precision=FLAGS.use_mixed_precision
+			)
+			
+
 
 
 def _check_keras_dependencies():
@@ -177,6 +237,9 @@ def _assert_accuracy(train_result, assert_accuracy_at_least):
 def main(args):
 	"""Main function to be called by absl.app.run() after flag parsing."""
 	del args
+
+	#policy = mixed_precision.Policy('mixed_float16')
+	#mixed_precision.set_policy(policy)
 
 #tf.config.gpu.set_per_process_memory_fraction(0.75)
 #tf.config.gpu.set_per_process_memory_growth(False)

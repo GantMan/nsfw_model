@@ -21,11 +21,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
+import multiprocessing
 from pathlib import Path
 from absl import app
 from absl import flags
 from absl import logging
 from tensorflow import keras
+from tensorflow.keras.mixed_precision import experimental as mixed_precision
 from tensorflow.core.framework import attr_value_pb2
 from tensorflow.core.framework import graph_pb2
 from tensorflow.core.framework import node_def_pb2
@@ -67,11 +69,57 @@ def get_default_image_dir():
 	return tf.keras.utils.get_file("flower_photos",
 								 _DEFAULT_IMAGE_URL, untar=True)
 
+def configure_optimizer(hparams):
+	"""Configures the optimizer used for training.
+	
+	Args:
+		learning_rate: A scalar or `Tensor` learning rate.
+	
+	Returns:
+		An instance of an optimizer.
+	
+	Raises:
+		ValueError: if hparams.optimizer is not recognized.
+	"""
+	if hparams.optimizer == 'adadelta':
+		optimizer = tf.keras.optimizers.Adadelta(
+			hparams.learning_rate,
+			rho=hparams.adadelta_rho,
+			epsilon=hparams.opt_epsilon)
+	elif hparams.optimizer == 'adagrad':
+		optimizer = tf.keras.optimizers.Adagrad(
+			hparams.learning_rate,
+			initial_accumulator_value=hparams.adagrad_initial_accumulator_value)
+	elif hparams.optimizer == 'adam':
+		optimizer = tf.keras.optimizers.Adam(
+			hparams.learning_rate,
+			beta_1=hparams.adam_beta1,
+			beta_2=hparams.adam_beta2,
+			epsilon=hparams.opt_epsilon)
+	elif hparams.optimizer == 'ftrl':
+		optimizer = tf.keras.optimizers.Ftrl(
+			hparams.learning_rate,
+			learning_rate_power=hparams.ftrl_learning_rate_power,
+			initial_accumulator_value=hparams.ftrl_initial_accumulator_value,
+			l1_regularization_strength=hparams.ftrl_l1,
+			l2_regularization_strength=hparams.ftrl_l2)  
+	elif hparams.optimizer == 'rmsprop':
+		optimizer = tf.keras.optimizers.RMSprop(learning_rate=hparams.learning_rate, epsilon=hparams.opt_epsilon, momentum=hparams.rmsprop_momentum)	
+	elif hparams.optimizer == 'sgd':
+		optimizer = tf.keras.optimizers.SGD(learning_rate=hparams.learning_rate, momentum=hparams.momentum)
+	else:
+		raise ValueError('Optimizer [%s] was not recognized' % hparams.optimizer)
+	return optimizer
+
 
 class HParams(
 	collections.namedtuple("HParams", [
 		"train_epochs", "do_fine_tuning", "batch_size", "learning_rate",
-		"momentum", "dropout_rate"
+		"momentum", "dropout_rate", "label_smoothing", "validation_split",
+		"optimizer", "adadelta_rho", "adagrad_initial_accumulator_value",
+		"adam_beta1", "adam_beta2", "opt_epsilon", "ftrl_learning_rate_power",
+		"ftrl_initial_accumulator_value", "ftrl_l1", "ftrl_l2", "rmsprop_momentum",
+		"rmsprop_decay", "do_data_augmentation", "use_mixed_precision"
 	])):
 	"""The hyperparameters for make_image_classifier.
 
@@ -93,11 +141,28 @@ def get_default_hparams():
 		batch_size=32,
 		learning_rate=0.005,
 		momentum=0.9,
-		dropout_rate=0.2)
+		dropout_rate=0.2,
+		label_smoothing=0.1,
+		validation_split=.20,
+		optimizer='rmsprop',
+		adadelta_rho=0.95,
+		adagrad_initial_accumulator_value=0.1,
+		adam_beta1=0.9,
+		adam_beta2=0.999,
+		opt_epsilon=1.0,
+		ftrl_learning_rate_power=-0.5,
+		ftrl_initial_accumulator_value=0.1,
+		ftrl_l1=0.0,
+		ftrl_l2=0.0,
+		rmsprop_momentum=0.9,
+		rmsprop_decay=0.9,
+		do_data_augmentation=False,
+		use_mixed_precision=False
+		)
 
 
 def _get_data_with_keras(image_dir, image_size, batch_size,
-						 do_data_augmentation=False):
+						 validation_size=0.2, do_data_augmentation=False):
 	"""Gets training and validation data via keras_preprocessing.
 
 	Args:
@@ -126,7 +191,7 @@ def _get_data_with_keras(image_dir, image_size, batch_size,
 	"""
 	datagen_kwargs = dict(rescale=1./255,
 						# TODO(b/139467904): Expose this as a flag.
-						validation_split=.20)
+						validation_split=validation_size)
 	dataflow_kwargs = dict(target_size=image_size, batch_size=batch_size,
 						 interpolation="bilinear")
 
@@ -143,7 +208,8 @@ def _get_data_with_keras(image_dir, image_size, batch_size,
 			**datagen_kwargs)
 	else:
 		train_datagen = valid_datagen
-		train_generator = train_datagen.flow_from_directory(
+
+	train_generator = train_datagen.flow_from_directory(
 			image_dir, subset="training", shuffle=True, **dataflow_kwargs)
 
 	indexed_labels = [(index, label)
@@ -215,14 +281,27 @@ def build_model(module_layer, hparams, image_size, num_classes):
 	The full classifier model.
 	"""
 	# TODO(b/139467904): Expose the hyperparameters below as flags.
-	model = tf.keras.Sequential([
-		tf.keras.Input(shape=(image_size[0], image_size[1], 3), name='input', dtype='float32'), module_layer,
-		tf.keras.layers.Dropout(rate=hparams.dropout_rate),
-		tf.keras.layers.Dense(
-			num_classes,
-			kernel_regularizer=tf.keras.regularizers.l2(0.0001)),
-		tf.keras.layers.Activation('softmax', dtype='float32', name='prediction')
-	])
+
+	if hparams.dropout_rate is not None and hparams.dropout_rate > 0:
+		model = tf.keras.Sequential([
+				tf.keras.Input(shape=(image_size[0], image_size[1], 3), name='input', dtype='float32'), 
+				module_layer,
+				tf.keras.layers.Dropout(rate=hparams.dropout_rate),
+				tf.keras.layers.Dense(
+					num_classes,
+					kernel_regularizer=tf.keras.regularizers.l2(0.0001)),
+				tf.keras.layers.Activation('softmax', dtype='float32', name='prediction')
+			])
+	else:
+		model = tf.keras.Sequential([
+				tf.keras.Input(shape=(image_size[0], image_size[1], 3), name='input', dtype='float32'), 
+				module_layer,
+				tf.keras.layers.Dense(
+					num_classes,
+					kernel_regularizer=None),
+				tf.keras.layers.Activation('softmax', dtype='float32', name='prediction')
+			])
+	
 	print(model.summary())
 	return model
 
@@ -249,20 +328,33 @@ def train_model(model, hparams, train_data_and_size, valid_data_and_size):
 	Returns:
 	The tf.keras.callbacks.History object returned by tf.keras.Model.fit().
 	"""
+
+	earlystop_callback = tf.keras.callbacks.EarlyStopping(
+  		monitor='val_accuracy', min_delta=0.0001,
+  		patience=1)
+
 	train_data, train_size = train_data_and_size
 	valid_data, valid_size = valid_data_and_size
 	# TODO(b/139467904): Expose this hyperparameter as a flag.
-	loss = tf.keras.losses.CategoricalCrossentropy(label_smoothing=0.1)
+	loss = tf.keras.losses.CategoricalCrossentropy(label_smoothing=hparams.label_smoothing)
+
+	if hparams.use_mixed_precision is True:
+		optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(configure_optimizer(hparams))
+	else:
+		optimizer = configure_optimizer(hparams)
+
 	model.compile(
-		optimizer=tf.keras.optimizers.SGD(
-			lr=hparams.learning_rate, momentum=hparams.momentum),
+		optimizer=optimizer,
 		loss=loss,
 		metrics=["accuracy"])
 	steps_per_epoch = train_size // hparams.batch_size
 	validation_steps = valid_size // hparams.batch_size
 	return model.fit(
 		train_data,
+		use_multiprocessing=False,
+		workers=multiprocessing.cpu_count() -1,
 		epochs=hparams.train_epochs,
+		callbacks=[earlystop_callback],
 		steps_per_epoch=steps_per_epoch,
 		validation_data=valid_data,
 		validation_steps=validation_steps)
@@ -404,13 +496,17 @@ def make_image_classifier(tfhub_module, image_dir, hparams,
 		must be omitted or set to that same value.
 	"""
 
+	print("Using hparams:")
+	for key, value in hparams._asdict().items():
+		print("\t{0} : {1}".format(key, value))
+		
 	module_layer = hub.KerasLayer(tfhub_module, trainable=hparams.do_fine_tuning)
 	
 	image_size = _image_size_for_module(module_layer, requested_image_size)
 	print("Using module {} with image size {}".format(
 		tfhub_module, image_size))
 	train_data_and_size, valid_data_and_size, labels = _get_data_with_keras(
-		image_dir, image_size, hparams.batch_size)
+		image_dir, image_size, hparams.batch_size, hparams.validation_split, hparams.do_data_augmentation)
 	print("Found", len(labels), "classes:", ", ".join(labels))
 
 	model = build_model(module_layer, hparams, image_size, len(labels))
