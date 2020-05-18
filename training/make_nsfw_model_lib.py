@@ -22,10 +22,14 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 import multiprocessing
+import matplotlib.pyplot as plt
+import io
+from datetime import datetime
 from pathlib import Path
 from absl import app
 from absl import flags
 from absl import logging
+import itertools
 from tensorflow import keras
 from tensorflow.keras.mixed_precision import experimental as mixed_precision
 from tensorflow.core.framework import attr_value_pb2
@@ -216,6 +220,7 @@ def _get_data_with_keras(image_dir, image_size, batch_size,
 					for label, index in train_generator.class_indices.items()]
 	sorted_indices, sorted_labels = zip(*sorted(indexed_labels))
 	assert sorted_indices == tuple(range(len(sorted_labels)))
+	
 	return ((train_generator, train_generator.samples),
 			(valid_generator, valid_generator.samples),
 			sorted_labels)
@@ -305,8 +310,55 @@ def build_model(module_layer, hparams, image_size, num_classes):
 	print(model.summary())
 	return model
 
+def plot_to_image(figure):
+	"""Converts the matplotlib plot specified by 'figure' to a PNG image and
+	returns it. The supplied figure is closed and inaccessible after this call."""
+	# Save the plot to a PNG in memory.
+	buf = io.BytesIO()
+	plt.savefig(buf, format='png')
+	# Closing the figure prevents it from being displayed directly inside
+	# the notebook.
+	plt.close(figure)
+	buf.seek(0)
+	# Convert PNG buffer to TF image
+	image = tf.image.decode_png(buf.getvalue(), channels=4)
+	# Add the batch dimension
+	image = tf.expand_dims(image, 0)
+	return image
 
-def train_model(model, hparams, train_data_and_size, valid_data_and_size):
+def plot_confusion_matrix(cm, class_names):
+	"""
+	Returns a matplotlib figure containing the plotted confusion matrix.
+	
+	Args:
+		cm (array, shape = [n, n]): a confusion matrix of integer classes
+		class_names (array, shape = [n]): String names of the integer classes
+	"""
+	figure = plt.figure(figsize=(8, 8))
+	plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+	plt.title("Confusion matrix")
+	
+	tick_marks = np.arange(len(class_names))
+	plt.xticks(tick_marks, class_names, rotation=45)
+	plt.yticks(tick_marks, class_names)
+	
+	# Normalize the confusion matrix.
+	cm = np.around(cm.astype('float') / cm.sum(axis=1)[:, np.newaxis], decimals=2)
+	
+	# Use white text if squares are dark; otherwise black.
+	threshold = cm.max() / 2.
+	for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+		color = "white" if cm[i, j] > threshold else "black"
+		plt.text(j, i, cm[i, j], horizontalalignment="center", color=color)
+	
+	plt.ylabel('True label')
+	plt.xlabel('Predicted label')
+
+	plt.tight_layout()
+
+	return figure
+
+def train_model(model, hparams, train_data_and_size, valid_data_and_size, log_dir, class_names):
 	"""Trains model with the given data and hyperparameters.
 
 	Args:
@@ -324,17 +376,24 @@ def train_model(model, hparams, train_data_and_size, valid_data_and_size):
 	valid_data_and_size: A (data, size) tuple in which data is validation data
 		to be fed in tf.keras.Model.fit(), size is a Python integer with the
 		numbers of validation.
+	log_dir: Path to create tensorboard log at.
 
 	Returns:
 	The tf.keras.callbacks.History object returned by tf.keras.Model.fit().
 	"""
-
-	earlystop_callback = tf.keras.callbacks.EarlyStopping(
-  		monitor='val_accuracy', min_delta=0.0001,
-  		patience=1)
-
 	train_data, train_size = train_data_and_size
 	valid_data, valid_size = valid_data_and_size
+
+	log_dir = log_dir + "-" + datetime.now().strftime("%Y%m%d")
+
+	steps_per_epoch = train_size // hparams.batch_size
+	validation_steps = valid_size // hparams.batch_size
+
+	earlystop_callback = tf.keras.callbacks.EarlyStopping(
+		  monitor='val_accuracy', min_delta=0.0001,
+		  patience=2)
+
+	
 	# TODO(b/139467904): Expose this hyperparameter as a flag.
 	loss = tf.keras.losses.CategoricalCrossentropy(label_smoothing=hparams.label_smoothing)
 
@@ -347,14 +406,36 @@ def train_model(model, hparams, train_data_and_size, valid_data_and_size):
 		optimizer=optimizer,
 		loss=loss,
 		metrics=["accuracy"])
-	steps_per_epoch = train_size // hparams.batch_size
-	validation_steps = valid_size // hparams.batch_size
+
+	def log_confusion_matrix(epoch, logs):
+		
+		valid_data.reset()
+		predictions = model.predict(valid_data, batch_size=hparams.batch_size, workers=1, steps=valid_size / hparams.batch_size)
+		prediction_classes = tf.argmax(predictions, axis=1)
+		
+		# Calculate the confusion matrix.
+		cm = tf.math.confusion_matrix(valid_data.classes, prediction_classes).numpy()
+		#cm = tf.cast(cm, dtype=tf.float32)
+		#cm = cm/cm.numpy().sum(axis=1)[:, tf.newaxis]
+
+		# Log the confusion matrix as an image summary.
+		figure = plot_confusion_matrix(cm, class_names=class_names)
+		cm_image = plot_to_image(figure)
+		
+		# Log the confusion matrix as an image summary.
+		file_writer_cm = tf.summary.create_file_writer(log_dir + '/cm')
+		with file_writer_cm.as_default():
+			tf.summary.image("Confusion Matrix", cm_image, step=epoch)
+
+	tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir)
+	cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=log_confusion_matrix)
+
 	return model.fit(
 		train_data,
 		use_multiprocessing=False,
 		workers=multiprocessing.cpu_count() -1,
 		epochs=hparams.train_epochs,
-		callbacks=[earlystop_callback],
+		callbacks=[earlystop_callback, tensorboard_callback, cm_callback],
 		steps_per_epoch=steps_per_epoch,
 		validation_data=valid_data,
 		validation_steps=validation_steps)
@@ -483,7 +564,7 @@ def model_to_frozen_graph(model):
 	return output_graph
 
 def make_image_classifier(tfhub_module, image_dir, hparams,
-							requested_image_size=None, saveModelDir=False):
+							requested_image_size=None, saveModelDir=None):
 	"""Builds and trains a TensorFLow model for image classification.
 
 	Args:
@@ -511,6 +592,8 @@ def make_image_classifier(tfhub_module, image_dir, hparams,
 
 	model = build_model(module_layer, hparams, image_size, len(labels))
 
+	log_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tensorboard")
+
 	# If we are fine-tuning, check and see if weights
 	# already exists at the output directory. This way, a user
 	# can simply run two consecutive training sessions. One without
@@ -518,12 +601,13 @@ def make_image_classifier(tfhub_module, image_dir, hparams,
 	if hparams.do_fine_tuning:
 		if saveModelDir is not None:
 			existingWeightsPath = os.path.join(saveModelDir, "saved_model_weights.h5")
+			log_dir = os.path.join(saveModelDir, "tensorboard")
 			if os.path.exists(existingWeightsPath):
 				print("Loading existing weights for fine-tuning")
 				model.load_weights(existingWeightsPath)
 
 	train_result = train_model(model, hparams, train_data_and_size,
-							 valid_data_and_size)
+							 valid_data_and_size, log_dir, labels)
 
 	# Tear down model, set training to 0 and then re-create.
 	# 1 - Save model weights as Keras H5.
