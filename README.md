@@ -15,14 +15,16 @@ Trained on 60+ Gigs of data to identify:
 This model powers [NSFW JS](https://github.com/infinitered/nsfwjs) - [More Info](https://shift.infinite.red/avoid-nightmares-nsfw-js-ab7b176978b1)
 
 ## Current Status:
-93% Accuracy with the following confusion matrix, based on Inception V3.
-![nsfw confusion matrix](_art/nsfw_confusion93.png)
+97.78% Accuracy with the following confusion matrix, based on Efficientnet B3.
+![nsfw confusion matrix](_art/model_data/efficientnet_b2/confusion_matrix.png)
 
-Review the `_art` folder for previous incarnations of this model.
+Note that at present, Tensorflow JS does not support conversion of the Efficientnet models.
+
+You can review the stats of all models in [this folder](_art/model_data).
 
 ## Requirements:
 keras (tested with versions > 2.0.0)
-tensorflow >= 2.1.0
+tensorflow >= 2.2.0
 
 ## Usage
 
@@ -65,8 +67,11 @@ Please feel free to use this model to help your products!
 
 If you'd like to [say thanks for creating this, I'll take a donation for hosting costs](https://www.paypal.me/GantLaborde).
 
-# Latest Models Zip (v1.1)
-https://github.com/GantMan/nsfw_model/releases/tag/1.1.0
+# Models
+The latest models are released in a zipped format in SavedModel format, but also include a frozen graph.
+Where possible, the latest model zip files will contain TensorflowJS 2-byte quantized and 1-byte quantized versions as well.
+
+Latest models can be found on the [releases page](https://github.com/GantMan/nsfw_model/releases/).
 
 ### Original Inception v3 Model (v1.0)
 * [Keras 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.h5)
@@ -81,9 +86,24 @@ https://github.com/GantMan/nsfw_model/releases/tag/1.1.0
 * [Tensorflow 224x224 Image Model](https://s3.amazonaws.com/ir_public/nsfwjscdn/TF_nsfw_mobilenet/nsfw_mobilenet.pb) - [Graph if Needed](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/graph_transforms#inspecting-graphs)
 * [Tensorflow Quantized 224x224 Image Model](https://s3.amazonaws.com/ir_public/nsfwjscdn/TF_nsfw_mobilenet/quant_nsfw_mobilenet.pb) - [Graph if Needed](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/graph_transforms#inspecting-graphs)
 
+## Training Folder Contents For Tensorflow 2.*
+These scripts are responsible for creating the current models.
+* `train_all_models.cmd` or `train_all_models.sh` - Scripts that train all current models from Tensorflow Hub modules using transfer learning.
+* `convert_all_models.cmd` or `convert_all_models.sh` - Scripts that convert all current models to Tensorflow JS. Presently, Efficientnets are not supported.
 
-## Training Folder Contents
-Simple description of the scripts used to create this model:
+Tensorflow 2.* training uses early stopping that is built-in to the training python code.
+The training scripts run fine tuning twice per model, once with a higher learning rate, and a second time at a diminished learning rate to squeeze out the most accuracy.
+The training process for Tensorflow 2.* also writes Tensorboard logs to the model directory and generates a confusion matrix as part of each epoch that is visible inside of Tensorboard.
+
+While the `.cmd` and `.sh` scripts use predefined settings, the `make_nsfw_model.py` script takes a myriad of tunable parameters that control things like data augmentation,
+selected optimizer and per-optimizer-settings, etc. Running `python make_nsfw_model.py --help` will yeild a list of all tunable parameters and their defaults.
+
+_e.g._
+```bash
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_140_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_140_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_140_224\saved_model.tflite --train_epochs 9001 --batch_size 32 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0
+```
+
+## Training Folder Contents For Tensorflow 1.*
 * `inceptionv3_transfer/` - Folder with all the code to train the Keras based Inception v3 transfer learning model.  Includes `constants.py` for configuration, and two scripts for actual training/refinement.
 * `mobilenetv2_transfer/` - Folder with all the code to train the Keras based Mobilenet v2 transfer learning model.
 * `visuals.py` - The code to create the confusion matrix graphic
@@ -91,7 +111,7 @@ Simple description of the scripts used to create this model:
 
 _e.g._
 ```bash
-cd training
+cd tf1\training
 # Start with all locked transfer of Inception v3
 python inceptionv3_transfer/train_initialization.py
 
