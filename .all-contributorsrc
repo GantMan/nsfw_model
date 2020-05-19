@@ -32,10 +32,11 @@
       "login": "TechnikEmpire",
       "name": "Jesse Nicholson",
       "avatar_url": "https://avatars0.githubusercontent.com/u/11234763?v=4",
-      "profile": "http://bpraneeth.com",
+      "profile": "https://technikempire.com",
       "contributions": [
         "code",
 		"doc",
+		"models",
         "ideas"
       ]
     }
