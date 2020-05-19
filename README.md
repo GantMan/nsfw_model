@@ -16,7 +16,7 @@ This model powers [NSFW JS](https://github.com/infinitered/nsfwjs) - [More Info]
 
 ## Current Status:
 97.78% Accuracy with the following confusion matrix, based on Efficientnet B3.
-![nsfw confusion matrix](_art/model_data/efficientnet_b2/confusion_matrix.png)
+![nsfw confusion matrix](_art/model_data/efficientnet_b3/confusion_matrix.png)
 
 Note that at present, Tensorflow JS does not support conversion of the Efficientnet models.
 
