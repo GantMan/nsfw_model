@@ -148,6 +148,14 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 
 # Changes
 
+## 1.2.1
+
+ - Tensorflow 2.* training scripts now write Tensorboard logs that include per-epoch confusion matrices.
+ 
+## 1.2.0
+
+ - Tensorflow 2.* training scripts enable full configuration of data augmentation, optimizer parameters and more.
+
 ## 1.1.1
 
 - break out numpy (nd array) function
