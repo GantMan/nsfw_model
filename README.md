@@ -20,7 +20,7 @@ This model powers [NSFW JS](https://github.com/infinitered/nsfwjs) - [More Info]
 
 Note that at present, Tensorflow JS does not support conversion of the Efficientnet models.
 
-You can review the stats of all models in [this folder](_art/model_data).
+You can review the stats of all models [here](model_data).
 
 ## Requirements:
 keras (tested with versions > 2.0.0)
