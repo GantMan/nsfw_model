@@ -5,12 +5,12 @@
 # NSFW Detection Machine Learning Model
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 
-Trained on 60+ Gigs of data to identify:
+Trained on several Gigs of data to identify:
 - `drawings` - safe for work drawings (including anime)
 - `hentai` - hentai and pornographic drawings
 - `neutral` - safe for work neutral images
 - `porn` - pornographic images, sexual acts
-- `sexy` - sexually explicit images, not pornography
+- `sexy` - provacative images, not pornography
 
 This model powers [NSFW JS](https://github.com/infinitered/nsfwjs) - [More Info](https://shift.infinite.red/avoid-nightmares-nsfw-js-ab7b176978b1)
 
