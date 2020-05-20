@@ -1,5 +1,9 @@
 :: You can add more models types from here: https://tfhub.dev/s?module-type=image-classification&tf-version=tf2
 :: However, you must choose Tensorflow 2 models. V1 models will not work here.
+:: https://tfhub.dev/google/imagenet/mobilenet_v2_035_224/feature_vector/4
+:: https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/feature_vector/4
+:: https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/feature_vector/4
+:: https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/4
 :: https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4
 :: https://tfhub.dev/tensorflow/efficientnet/b0/feature-vector/1
 :: https://tfhub.dev/tensorflow/efficientnet/b1/feature-vector/1
@@ -15,6 +19,34 @@
 :: Note that we set all of our target epochs to over 9000. This is because the trainer just uses early stopping internally.
 
 :: We do one round of higher-LR transfer learning and then one round of lower-LR fine-tuning.
+
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_035_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_035_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_035_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_035_224\saved_model.tflite --train_epochs 9001 --batch_size 128 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0
+
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_035_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_035_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_035_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_035_224\saved_model.tflite --train_epochs 9001 --batch_size 128 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0 --learning_rate=0.0005
+
+:: Wait for Python/CUDA/GPU to recover. Seems to die without this.
+Timeout /T 60 /Nobreak
+
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_050_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_050_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_050_224\saved_model.tflite --train_epochs 9001 --batch_size 92 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0
+
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_050_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_050_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_050_224\saved_model.tflite --train_epochs 9001 --batch_size 92 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0 --learning_rate=0.0005
+
+:: Wait for Python/CUDA/GPU to recover. Seems to die without this.
+Timeout /T 60 /Nobreak
+
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_075_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_075_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_075_224\saved_model.tflite --train_epochs 9001 --batch_size 64 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0
+
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_075_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_075_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_075_224\saved_model.tflite --train_epochs 9001 --batch_size 64 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0 --learning_rate=0.0005
+
+:: Wait for Python/CUDA/GPU to recover. Seems to die without this.
+Timeout /T 60 /Nobreak
+
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_100_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_100_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_100_224\saved_model.tflite --train_epochs 9001 --batch_size 48 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0
+
+python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_100_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_100_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_100_224\saved_model.tflite --train_epochs 9001 --batch_size 48 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0 --learning_rate=0.0005
+
+:: Wait for Python/CUDA/GPU to recover. Seems to die without this.
+Timeout /T 60 /Nobreak
 
 python make_nsfw_model.py --image_dir %cd%\..\images --image_size 224 --saved_model_dir %cd%\..\trained_models\mobilenet_v2_140_224 --labels_output_file %cd%\..\trained_models\mobilenet_v2_140_224\class_labels.txt --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4 --tflite_output_file %cd%\..\trained_models\mobilenet_v2_140_224\saved_model.tflite --train_epochs 9001 --batch_size 32 --do_fine_tuning --dropout_rate 0.0 --label_smoothing=0.0 --validation_split=0.1 --do_data_augmentation=True --use_mixed_precision=True --rmsprop_momentum=0.0
 
