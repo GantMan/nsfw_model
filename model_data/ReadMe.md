@@ -1,5 +1,7 @@
 # Current Model Statistics
 
+Please note that the stats reported here are dependent on the input training and validation data. [YMMV](https://dictionary.cambridge.org/dictionary/english/ymmv).
+
 * [Efficientnet B0](#efficientnet-b0)
 * [Efficientnet B1](#efficientnet-b1)
 * [Efficientnet B2](#efficientnet-b2)
