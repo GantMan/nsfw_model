@@ -5,7 +5,11 @@
 * [Efficientnet B2](#efficientnet-b2)
 * [Efficientnet B3](#efficientnet-b3)
 * [Inception V3](#inception-v3)
-* [Mobilenet V2](#mobilenet-v2)
+* [Mobilenet V2 0.35](#mobilenet-v2-0.35)
+* [Mobilenet V2 0.5](#mobilenet-v2-0.5)
+* [Mobilenet V2 0.75](#mobilenet-v2-0.75)
+* [Mobilenet V2 1.0](#mobilenet-v2-1.0)
+* [Mobilenet V2 1.4](#mobilenet-v2-1.4)
 * [NasNet A](#nasnet-a)
 * [Resnet 50 V2](#resnet-50-v2)
 
@@ -74,7 +78,59 @@
 ### Confusion Matrix:
 ![inception_v3_224 confusion](../_art/model_data/inception_v3_224/confusion_matrix.png)
 
-## Mobilenet V2
+## Mobilenet V2 0.35
+* Input Dimension: 224x224x3
+* Accuracy: 94.93%
+
+### Epoch Accuracy Chart:
+![mobilenet_v2_035_224 accuracy](../_art/model_data/mobilenet_v2_035_224/epoch_accuracy.svg)
+
+### Epoch Loss Chart:
+![mobilenet_v2_035_224 loss](../_art/model_data/mobilenet_v2_035_224/epoch_loss.svg)
+
+### Confusion Matrix:
+![mobilenet_v2_035_224 confusion](../_art/model_data/mobilenet_v2_035_224/confusion_matrix.png)
+
+## Mobilenet V2 0.5
+* Input Dimension: 224x224x3
+* Accuracy: 94.42%
+
+### Epoch Accuracy Chart:
+![mobilenet_v2_050_224 accuracy](../_art/model_data/mobilenet_v2_050_224/epoch_accuracy.svg)
+
+### Epoch Loss Chart:
+![mobilenet_v2_050_224 loss](../_art/model_data/mobilenet_v2_050_224/epoch_loss.svg)
+
+### Confusion Matrix:
+![mobilenet_v2_050_224 confusion](../_art/model_data/mobilenet_v2_050_224/confusion_matrix.png)
+
+## Mobilenet V2 0.75
+* Input Dimension: 224x224x3
+* Accuracy: 95.97%
+
+### Epoch Accuracy Chart:
+![mobilenet_v2_075_224 accuracy](../_art/model_data/mobilenet_v2_075_224/epoch_accuracy.svg)
+
+### Epoch Loss Chart:
+![mobilenet_v2_075_224 loss](../_art/model_data/mobilenet_v2_075_224/epoch_loss.svg)
+
+### Confusion Matrix:
+![mobilenet_v2_075_224 confusion](../_art/model_data/mobilenet_v2_075_224/confusion_matrix.png)
+
+## Mobilenet V2 1.0
+* Input Dimension: 224x224x3
+* Accuracy: 96.17%
+
+### Epoch Accuracy Chart:
+![mobilenet_v2_100_224 accuracy](../_art/model_data/mobilenet_v2_100_224/epoch_accuracy.svg)
+
+### Epoch Loss Chart:
+![mobilenet_v2_100_224 loss](../_art/model_data/mobilenet_v2_100_224/epoch_loss.svg)
+
+### Confusion Matrix:
+![mobilenet_v2_100_224 confusion](../_art/model_data/mobilenet_v2_100_224/confusion_matrix.png)
+
+## Mobilenet V2 1.4
 * Input Dimension: 224x224x3
 * Accuracy: 97.34%
 

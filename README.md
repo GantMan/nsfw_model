@@ -69,7 +69,7 @@ If you'd like to [say thanks for creating this, I'll take a donation for hosting
 
 # Models
 The latest models are released in a zipped format in SavedModel format, but also include a frozen graph.
-Where possible, the latest model zip files will contain TensorflowJS 2-byte quantized and 1-byte quantized versions as well.
+Where possible, the latest model zip files will contain TensorflowJS model and TensorflowJS 1-byte quantized versions as well.
 
 Latest models can be found on the [releases page](https://github.com/GantMan/nsfw_model/releases/).
 
