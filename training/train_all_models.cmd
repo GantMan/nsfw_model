@@ -15,6 +15,9 @@
 ::
 :: If you get CUDA_OUT_OF_MEMORY crash, you need to pass --batch_size NUMBER, reducing until you don't get this error.
 :: It is advised by Google not to have a batch size < 8.
+:: These scripts are tuned based on 6GB of GPU ram and compute capability >= 7.0. If you do not have compute
+:: >= 7.0, set --use_mixed_precision=False. If you do not have 6GB of GPU ram, turn down the batch sizes until
+:: you no longer have CUDA_OUT_OF_MEMORY errors.
 
 :: Note that we set all of our target epochs to over 9000. This is because the trainer just uses early stopping internally.
 
