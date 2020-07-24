@@ -81,6 +81,9 @@ https://github.com/GantMan/nsfw_model/releases/tag/1.1.0
 * [Tensorflow 224x224 Image Model](https://s3.amazonaws.com/ir_public/nsfwjscdn/TF_nsfw_mobilenet/nsfw_mobilenet.pb) - [Graph if Needed](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/graph_transforms#inspecting-graphs)
 * [Tensorflow Quantized 224x224 Image Model](https://s3.amazonaws.com/ir_public/nsfwjscdn/TF_nsfw_mobilenet/quant_nsfw_mobilenet.pb) - [Graph if Needed](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/graph_transforms#inspecting-graphs)
 
+## PyTorch Version
+Kudos to the community for creating a PyTorch version with resnet!
+https://github.com/yangbisheng2009/nsfw-resnet
 
 ## Training Folder Contents
 Simple description of the scripts used to create this model:
