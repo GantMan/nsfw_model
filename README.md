@@ -118,6 +118,15 @@ Special thanks to the [nsfw_data_scraper](https://github.com/alexkimxyz/nsfw_dat
 
 If you need React Native, Elixir, AI, or Machine Learning work, check in with us at [Infinite Red](https://infinite.red/), who make all these experiments possible.  We're an amazing software consultancy worldwide!
 
+## Cite
+```
+@misc{man,
+  title={Deep NN for NSFW Detection},
+  url={https://github.com/GantMan/nsfw_model},
+  journal={GitHub},
+  author={Laborde, Gant}}
+```
+
 ## Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
