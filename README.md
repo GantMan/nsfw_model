@@ -69,10 +69,10 @@ If you'd like to [say thanks for creating this, I'll take a donation for hosting
 https://github.com/GantMan/nsfw_model/releases/tag/1.1.0
 
 ### Original Inception v3 Model (v1.0)
-* [Keras 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.h5)
-* [TensorflowJS 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfwjs.zip)
-* [TensorflowJS Quantized 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/min_nsfwjs.zip)
-* [Tensorflow 299x299 Image Model](https://s3.amazonaws.com/nsfwdetector/nsfw.299x299.pb) - [Graph if Needed](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/graph_transforms#inspecting-graphs)
+* [Keras 299x299 Image Model](https://s3.amazonaws.com/ir_public/ai/nsfw_models/nsfw.299x299.h5)
+* [TensorflowJS 299x299 Image Model](https://s3.amazonaws.com/ir_public/ai/nsfw_models/nsfwjs.zip)
+* [TensorflowJS Quantized 299x299 Image Model](https://s3.amazonaws.com/ir_public/ai/nsfw_models/min_nsfwjs.zip)
+* [Tensorflow 299x299 Image Model](https://s3.amazonaws.com/ir_public/ai/nsfw_models/nsfw.299x299.pb) - [Graph if Needed](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/graph_transforms#inspecting-graphs)
 
 ### Original Mobilenet v2 Model (v1.0)
 * [Keras 224x224 Image Model](https://s3.amazonaws.com/ir_public/nsfwjscdn/nsfw_mobilenet2.224x224.h5)
