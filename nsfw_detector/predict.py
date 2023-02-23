@@ -67,9 +67,8 @@ def classify(model, input_paths, image_dim=IMAGE_DIM):
 def classify_nd(model, nd_images):
     """ Classify given a model, image array (numpy)...."""
 
-    model_preds = model.predict(nd_images)
-    # preds = np.argsort(model_preds, axis = 1).tolist()
-    
+    model_preds = model(nd_images)
+
     categories = ['drawings', 'hentai', 'neutral', 'porn', 'sexy']
 
     probs = []
