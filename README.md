@@ -21,8 +21,8 @@ This model powers [NSFW JS](https://github.com/infinitered/nsfwjs) - [More Info]
 Review the `_art` folder for previous incarnations of this model.
 
 ## Requirements:
-keras (tested with versions > 2.0.0)
-tensorflow >= 2.1.0
+
+See [requirements.txt](requirements.txt).
 
 ## Usage
 
@@ -65,7 +65,7 @@ Please feel free to use this model to help your products!
 
 If you'd like to [say thanks for creating this, I'll take a donation for hosting costs](https://www.paypal.me/GantLaborde).
 
-# Latest Models Zip (v1.1)
+# Latest Models Zip (v1.1.0)
 https://github.com/GantMan/nsfw_model/releases/tag/1.1.0
 
 ### Original Inception v3 Model (v1.0)
@@ -85,7 +85,7 @@ https://github.com/GantMan/nsfw_model/releases/tag/1.1.0
 Kudos to the community for creating a PyTorch version with resnet!
 https://github.com/yangbisheng2009/nsfw-resnet
 
-## Training Folder Contents
+## TF1 Training Folder Contents
 Simple description of the scripts used to create this model:
 * `inceptionv3_transfer/` - Folder with all the code to train the Keras based Inception v3 transfer learning model.  Includes `constants.py` for configuration, and two scripts for actual training/refinement.
 * `mobilenetv2_transfer/` - Folder with all the code to train the Keras based Mobilenet v2 transfer learning model.
@@ -110,7 +110,7 @@ There's no easy way to distribute the training data, but if you'd like to help w
 
 Advancements in this model power the quantized TFJS module on https://nsfwjs.com/
 
-My twitter is [@GantLaborde](https://twitter.com/GantLaborde) - I'm a School Of AI Wizard New Orleans.  I run the twitter account [@FunMachineLearn](https://twitter.com/FunMachineLearn)
+My Twitter is [@GantLaborde](https://twitter.com/GantLaborde) - I'm a School Of AI Wizard New Orleans.  I run the twitter account [@FunMachineLearn](https://twitter.com/FunMachineLearn)
 
 Learn more about [me](http://gantlaborde.com/) and the [company I work for](https://infinite.red/).
 
@@ -139,6 +139,13 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
 
 # Changes
+
+## [unreleased]
+
+- Require Python 3.8+
+- Require Tensorflow 2.2+ for non-macOS
+- Require Tensorflow 2.5+ for macOS via tensorflow_macos
+- Declares numpy dependency explicitly
 
 ## 1.1.1
 
