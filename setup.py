@@ -18,7 +18,7 @@ URL = 'https://github.com/GantMan/nsfw_model'
 EMAIL = 'gantman@gmail.com'
 AUTHOR = 'Gant Laborde'
 REQUIRES_PYTHON = '>=3.8.0'
-VERSION = '1.1.1'
+VERSION = '1.2.0'
 
 # What packages are optional?
 EXTRAS = {
