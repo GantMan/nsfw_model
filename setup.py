@@ -17,7 +17,7 @@ DESCRIPTION = 'NSFW Image Detection with Deep Learning'
 URL = 'https://github.com/GantMan/nsfw_model'
 EMAIL = 'gantman@gmail.com'
 AUTHOR = 'Gant Laborde'
-REQUIRES_PYTHON = '>=3.5.0'
+REQUIRES_PYTHON = '>=3.8.0'
 VERSION = '1.1.1'
 
 # What packages are optional?
@@ -124,7 +124,10 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
