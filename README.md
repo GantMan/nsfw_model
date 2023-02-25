@@ -137,28 +137,3 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
-
-# Changes
-
-## [unreleased]
-
-- Require Python 3.8+
-- Require Tensorflow 2.2+ for non-macOS
-- Require Tensorflow 2.5+ for macOS via tensorflow_macos
-- Declares numpy dependency explicitly
-
-## 1.1.1
-
-- break out numpy (nd array) function
-- remove classic app run modes for argparse
-- one more example in README for running
-- turn down verbosity in image load via file
-- fix requirements for clean system (needs PIL)
-
-## 1.1.0
-
-- update to tensorflow 2.1.0 and updated mobilenet-based model
-
-## 1.0.0
-
-- initial creation

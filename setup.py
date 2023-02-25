@@ -18,7 +18,7 @@ URL = 'https://github.com/GantMan/nsfw_model'
 EMAIL = 'gantman@gmail.com'
 AUTHOR = 'Gant Laborde'
 REQUIRES_PYTHON = '>=3.8.0'
-VERSION = '1.2.0'
+VERSION = '1.3.0'
 
 # What packages are optional?
 EXTRAS = {
@@ -46,6 +46,8 @@ except FileNotFoundError:
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
 try:
     with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+        long_description = '\n' + f.read()
+    with io.open(os.path.join(here, 'CHANGELOG.md'), encoding='utf-8') as f:
         long_description = '\n' + f.read()
 except FileNotFoundError:
     long_description = DESCRIPTION
