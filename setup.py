@@ -17,8 +17,8 @@ DESCRIPTION = 'NSFW Image Detection with Deep Learning'
 URL = 'https://github.com/GantMan/nsfw_model'
 EMAIL = 'gantman@gmail.com'
 AUTHOR = 'Gant Laborde'
-REQUIRES_PYTHON = '>=3.5.0'
-VERSION = '1.1.1'
+REQUIRES_PYTHON = '>=3.8.0'
+VERSION = '1.3.0'
 
 # What packages are optional?
 EXTRAS = {
@@ -46,6 +46,8 @@ except FileNotFoundError:
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
 try:
     with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+        long_description = '\n' + f.read()
+    with io.open(os.path.join(here, 'CHANGELOG.md'), encoding='utf-8') as f:
         long_description = '\n' + f.read()
 except FileNotFoundError:
     long_description = DESCRIPTION
@@ -117,14 +119,17 @@ setup(
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
-    license='GPLv3',
+    license='MIT',
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
