@@ -41,6 +41,11 @@ predict.classify(model, ['/Users/bedapudi/Desktop/2.jpg', '/Users/bedapudi/Deskt
 # Predict for all images in a directory
 predict.classify(model, '/Users/bedapudi/Desktop/')
 
+# Predict single image with nsfw.299x299.h5
+model = predict.load_model('./nsfw.299x299.h5')
+predict.classify(model, '2.jpg', 299)
+# {'2.jpg': {'sexy': 4.3454795e-05, 'neutral': 0.00026579312, 'porn': 0.0007733498, 'hentai': 0.14751942, 'drawings': 0.8513979}, '6.jpg': {'drawings': 0.004214506, 'hentai': 0.013342537, 'neutral': 0.01834045, 'porn': 0.4431829, 'sexy': 0.5209196}}
+
 ```
 
 If you've installed the package or use the command-line this should work, too...
