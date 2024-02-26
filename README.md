@@ -63,8 +63,8 @@ Please feel free to use this model to help your products!
 
 If you'd like to [say thanks for creating this, I'll take a donation for hosting costs](https://www.paypal.me/GantLaborde).
 
-# Latest Models Zip (v1.1.0)
-https://github.com/GantMan/nsfw_model/releases/tag/1.1.0
+# Latest Models Zip (v1.2.0)
+https://github.com/GantMan/nsfw_model/releases/tag/1.2.0
 
 ### Original Inception v3 Model (v1.0)
 * [Keras 299x299 Image Model](https://s3.amazonaws.com/ir_public/ai/nsfw_models/nsfw.299x299.h5)
